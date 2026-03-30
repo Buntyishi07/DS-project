@@ -1,21 +1,68 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
   <title>Movie Booking System</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      background: #f4f6f8;
+      text-align: center;
+      padding: 30px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    input {
+      padding: 10px;
+      width: 200px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 10px 15px;
+      margin: 5px;
+      border: none;
+      background: #007bff;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    #output {
+      margin-top: 20px;
+      padding: 15px;
+      background: white;
+      border-radius: 8px;
+      width: 60%;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      min-height: 50px;
+    }
+  </style>
 </head>
+
 <body>
 
 <h1>🎬 Movie Ticket Booking System</h1>
 
 <input id="username" placeholder="Enter your name" />
-<br><br>
+<br>
 
 <button onclick="requestBooking()">Request Booking</button>
 <button onclick="processBooking()">Process Booking</button>
 <button onclick="cancelBooking()">Cancel Booking</button>
 <button onclick="showBookings()">Show Bookings</button>
 
-<pre id="output"></pre>
+<div id="output">System Ready...</div>
 
 <script>
 // ===== DSA CLASSES =====
@@ -72,8 +119,9 @@ class MovieBookingSystem {
   }
 
   requestBooking(user) {
+    if (!user) return "⚠️ Enter a name first!";
     this.waitingQueue.enqueue(user);
-    return user + " added to waiting queue";
+    return user + " added to queue";
   }
 
   processBooking() {
@@ -84,7 +132,7 @@ class MovieBookingSystem {
     if (!seat) return "No seats available";
 
     this.confirmedBookings.push({ user, seat });
-    return user + " booked " + seat;
+    return "✅ " + user + " booked " + seat;
   }
 
   cancelBooking() {
@@ -92,7 +140,7 @@ class MovieBookingSystem {
     if (!booking) return "No bookings to cancel";
 
     this.availableSeats.enqueue(booking.seat);
-    return "Cancelled booking of " + booking.user;
+    return "❌ Cancelled booking of " + booking.user;
   }
 
   getBookings() {
@@ -102,26 +150,22 @@ class MovieBookingSystem {
 
 const system = new MovieBookingSystem();
 
-// ===== UI FUNCTIONS =====
+// ===== UI =====
 function requestBooking() {
   const name = document.getElementById("username").value;
-  const result = system.requestBooking(name);
-  updateOutput(result);
+  updateOutput(system.requestBooking(name));
 }
 
 function processBooking() {
-  const result = system.processBooking();
-  updateOutput(result);
+  updateOutput(system.processBooking());
 }
 
 function cancelBooking() {
-  const result = system.cancelBooking();
-  updateOutput(result);
+  updateOutput(system.cancelBooking());
 }
 
 function showBookings() {
-  const bookings = system.getBookings();
-  updateOutput(JSON.stringify(bookings, null, 2));
+  updateOutput(JSON.stringify(system.getBookings(), null, 2));
 }
 
 function updateOutput(msg) {
