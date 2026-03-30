@@ -165,7 +165,31 @@ function cancelBooking() {
 }
 
 function showBookings() {
-  updateOutput(JSON.stringify(system.getBookings(), null, 2));
+  const bookings = system.getBookings();
+
+  if (bookings.length === 0) {
+    updateOutput("No bookings yet");
+    return;
+  }
+
+  let html = "<h3>🎟 Booking History</h3>";
+
+  bookings.forEach((b, index) => {
+    html += `
+      <div style="
+        background:#f9f9f9;
+        margin:10px;
+        padding:10px;
+        border-radius:6px;
+        box-shadow:0 2px 5px rgba(0,0,0,0.1)
+      ">
+        <strong>User:</strong> ${b.user} <br>
+        <strong>Seat:</strong> ${b.seat}
+      </div>
+    `;
+  });
+
+  document.getElementById("output").innerHTML = html;
 }
 
 function updateOutput(msg) {
