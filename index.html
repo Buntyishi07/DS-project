@@ -1,0 +1,139 @@
+// Movie Ticket Booking System - Web App Version
+// Uses Queue, Stack, Circular Queue + Menu UI
+
+class Stack {
+  constructor() { this.items = []; }
+  push(e) { this.items.push(e); }
+  pop() { return this.items.pop(); }
+}
+
+class Queue {
+  constructor() { this.items = []; }
+  enqueue(e) { this.items.push(e); }
+  dequeue() { return this.items.shift(); }
+}
+
+class CircularQueue {
+  constructor(size) {
+    this.size = size;
+    this.queue = new Array(size);
+    this.front = -1;
+    this.rear = -1;
+  }
+
+  enqueue(value) {
+    if ((this.rear + 1) % this.size === this.front) return null;
+    if (this.front === -1) this.front = 0;
+    this.rear = (this.rear + 1) % this.size;
+    this.queue[this.rear] = value;
+    return true;
+  }
+
+  dequeue() {
+    if (this.front === -1) return null;
+    let value = this.queue[this.front];
+    if (this.front === this.rear) {
+      this.front = this.rear = -1;
+    } else {
+      this.front = (this.front + 1) % this.size;
+    }
+    return value;
+  }
+}
+
+class MovieBookingSystem {
+  constructor() {
+    this.waitingQueue = new Queue();
+    this.confirmedBookings = new Stack();
+    this.availableSeats = new CircularQueue(5);
+
+    for (let i = 1; i <= 5; i++) {
+      this.availableSeats.enqueue("Seat-" + i);
+    }
+  }
+
+  requestBooking(user) {
+    this.waitingQueue.enqueue(user);
+    return `${user} added to waiting queue`;
+  }
+
+  processBooking() {
+    let user = this.waitingQueue.dequeue();
+    if (!user) return "No users in queue";
+
+    let seat = this.availableSeats.dequeue();
+    if (!seat) return "No seats available";
+
+    this.confirmedBookings.push({ user, seat });
+    return `${user} booked ${seat}`;
+  }
+
+  cancelBooking() {
+    let booking = this.confirmedBookings.pop();
+    if (!booking) return "No bookings to cancel";
+
+    this.availableSeats.enqueue(booking.seat);
+    return `Cancelled booking of ${booking.user}`;
+  }
+
+  getBookings() {
+    return this.confirmedBookings.items;
+  }
+}
+
+const system = new MovieBookingSystem();
+
+// UI Functions
+function requestBooking() {
+  const name = document.getElementById("username").value;
+  const result = system.requestBooking(name);
+  updateOutput(result);
+}
+
+function processBooking() {
+  const result = system.processBooking();
+  updateOutput(result);
+}
+
+function cancelBooking() {
+  const result = system.cancelBooking();
+  updateOutput(result);
+}
+
+function showBookings() {
+  const bookings = system.getBookings();
+  updateOutput(JSON.stringify(bookings, null, 2));
+}
+
+function updateOutput(msg) {
+  document.getElementById("output").innerText = msg;
+}
+
+// HTML Structure
+const app = document.createElement("div");
+app.innerHTML = `
+  <h1>🎬 Movie Ticket Booking System</h1>
+
+  <input id="username" placeholder="Enter your name" />
+  <br/><br/>
+
+  <button onclick="requestBooking()">Request Booking</button>
+  <button onclick="processBooking()">Process Booking</button>
+  <button onclick="cancelBooking()">Cancel Booking</button>
+  <button onclick="showBookings()">Show Bookings</button>
+
+  <pre id="output"></pre>
+`;
+
+document.body.appendChild(app);
+
+/*
+How to run:
+1. Save as index.html
+2. Open in browser
+
+What you achieved:
+- Menu-driven UI
+- Real-time interaction
+- DSA concepts visualized
+*/
