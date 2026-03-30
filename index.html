@@ -1,6 +1,24 @@
-// Movie Ticket Booking System - Web App Version
-// Uses Queue, Stack, Circular Queue + Menu UI
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Movie Booking System</title>
+</head>
+<body>
 
+<h1>🎬 Movie Ticket Booking System</h1>
+
+<input id="username" placeholder="Enter your name" />
+<br><br>
+
+<button onclick="requestBooking()">Request Booking</button>
+<button onclick="processBooking()">Process Booking</button>
+<button onclick="cancelBooking()">Cancel Booking</button>
+<button onclick="showBookings()">Show Bookings</button>
+
+<pre id="output"></pre>
+
+<script>
+// ===== DSA CLASSES =====
 class Stack {
   constructor() { this.items = []; }
   push(e) { this.items.push(e); }
@@ -41,6 +59,7 @@ class CircularQueue {
   }
 }
 
+// ===== SYSTEM =====
 class MovieBookingSystem {
   constructor() {
     this.waitingQueue = new Queue();
@@ -54,7 +73,7 @@ class MovieBookingSystem {
 
   requestBooking(user) {
     this.waitingQueue.enqueue(user);
-    return `${user} added to waiting queue`;
+    return user + " added to waiting queue";
   }
 
   processBooking() {
@@ -65,7 +84,7 @@ class MovieBookingSystem {
     if (!seat) return "No seats available";
 
     this.confirmedBookings.push({ user, seat });
-    return `${user} booked ${seat}`;
+    return user + " booked " + seat;
   }
 
   cancelBooking() {
@@ -73,7 +92,7 @@ class MovieBookingSystem {
     if (!booking) return "No bookings to cancel";
 
     this.availableSeats.enqueue(booking.seat);
-    return `Cancelled booking of ${booking.user}`;
+    return "Cancelled booking of " + booking.user;
   }
 
   getBookings() {
@@ -83,7 +102,7 @@ class MovieBookingSystem {
 
 const system = new MovieBookingSystem();
 
-// UI Functions
+// ===== UI FUNCTIONS =====
 function requestBooking() {
   const name = document.getElementById("username").value;
   const result = system.requestBooking(name);
@@ -108,32 +127,7 @@ function showBookings() {
 function updateOutput(msg) {
   document.getElementById("output").innerText = msg;
 }
+</script>
 
-// HTML Structure
-const app = document.createElement("div");
-app.innerHTML = `
-  <h1>🎬 Movie Ticket Booking System</h1>
-
-  <input id="username" placeholder="Enter your name" />
-  <br/><br/>
-
-  <button onclick="requestBooking()">Request Booking</button>
-  <button onclick="processBooking()">Process Booking</button>
-  <button onclick="cancelBooking()">Cancel Booking</button>
-  <button onclick="showBookings()">Show Bookings</button>
-
-  <pre id="output"></pre>
-`;
-
-document.body.appendChild(app);
-
-/*
-How to run:
-1. Save as index.html
-2. Open in browser
-
-What you achieved:
-- Menu-driven UI
-- Real-time interaction
-- DSA concepts visualized
-*/
+</body>
+</html>
